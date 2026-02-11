@@ -12,7 +12,7 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $departments = Department::all();
+        $departments = Department::orderBy('id','desc')->get();
         return view('admin.departments.index', compact('departments'));
     }
 
@@ -80,13 +80,23 @@ class DepartmentController extends Controller
         return view('admin.departments.edit', compact('department', 'departments'));
     }
 
-    public function update(UpdateDepartmentRequest $request, Department $department)
+    public function update(Request $request, $id)
     {
         try {
-            $department->update([
-                ...$request->validated(),
-                'functions' => implode(',', (array)$request->functions),
-            ]);
+                $request->validate([
+                        'name' => 'required|string|max:255',
+                        'code' => 'required|string|max:100',
+                        'category' => 'required',
+                        'status' => 'required',
+                        'email' => 'required|email',
+                        'contact_number' => 'required',
+                        'location' => 'required',
+                    ]);
+
+                    $department = Department::findOrFail($id); // ✅ find correct row
+
+                    $department->update($request->all()); // ✅ update only this record
+
             return redirect()->route('admin.departments.index')
                 ->with('success', 'Department updated successfully.');
         } catch (\Exception $e) {

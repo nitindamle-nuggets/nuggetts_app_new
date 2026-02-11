@@ -213,6 +213,11 @@
             max-width: none;
             cursor: pointer;
         }
+        .radio-group input[type="radio"] {
+            appearance: auto !important;
+            -webkit-appearance: radio !important;
+            accent-color: #1e3c72; /* optional color */
+        }
 
         .checkbox-group {
             display: flex;

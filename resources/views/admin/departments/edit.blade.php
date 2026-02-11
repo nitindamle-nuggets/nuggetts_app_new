@@ -129,6 +129,12 @@
             max-width: none;
             cursor: pointer;
         }
+        .radio-group input[type="radio"] {
+                appearance: auto !important;
+                -webkit-appearance: radio !important;
+                accent-color: #1e3c72; /* optional color */
+            }
+
         .checkbox-group {
             display: flex;
             flex-direction: column;
@@ -192,7 +198,7 @@
             <i class="fas fa-sitemap fa-2x"></i>
             <h1>Edit Department</h1>
         </div>
-        <form action="{{ route('admin.departments.update', $department->id) }}" method="POST" id="departmentForm" novalidate>
+        <form action="{{ route('admin.departments.update', $department->id) }}" method="POST" id="editDepartmentForm" novalidate>
             @csrf
             @method('PUT')
             <div class="section">
@@ -547,4 +553,36 @@
             </div>
         </form>
     </div>
+
+<script>
+document.getElementById("editDepartmentForm").addEventListener("submit", function(e) {
+    let valid = true;
+    let messages = [];
+
+    let name = document.querySelector("[name='name']").value.trim();
+    let code = document.querySelector("[name='code']").value.trim();
+    let email = document.querySelector("[name='email']").value.trim();
+    let contact = document.querySelector("[name='contact_number']").value.trim();
+    let category = document.querySelector("[name='category']").value;
+    let location = document.querySelector("[name='location']").value;
+    let status = document.querySelector("input[name='status']:checked");
+
+    if (name.length < 2) messages.push("Department name must be at least 2 characters.");
+    if (code === "") messages.push("Department code is required.");
+    if (category === "") messages.push("Category is required.");
+    if (!status) messages.push("Status is required.");
+    if (location === "") messages.push("Location is required.");
+
+    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) messages.push("Enter a valid email address.");
+
+    let phonePattern = /^[0-9+\s-]{10,15}$/;
+    if (!phonePattern.test(contact)) messages.push("Enter a valid contact number.");
+
+    if (messages.length > 0) {
+        e.preventDefault();
+        alert(messages.join("\n"));
+    }
+});
+</script>
 @endsection
